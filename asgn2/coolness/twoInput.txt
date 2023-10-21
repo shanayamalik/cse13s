@@ -1,0 +1,2 @@
+Temp	Wind	Coolness
+ 32.5	 10.0	 24.3
