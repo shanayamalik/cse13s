@@ -4,8 +4,8 @@
 
 void print_usage() {
   printf("Usage: ./coolness [temperature] [wind speed]\n");
-  exit(1);
-}
+  exit(1); /* Exit the program with error code 1 */
+} 
 
 void print_error() {
   printf("Error: Coolness. Acceptable input values are -99<=T<=50 and   0.5<=V.\n");
