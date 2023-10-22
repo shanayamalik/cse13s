@@ -1,6 +1,5 @@
 #!/bin/bash
 
-rm coolness
 make
 
 echo testing coolness with no arguments

@@ -5,6 +5,7 @@
 !*.c
 !*.h
 !*.sh
+!*.txt
 !*.plt
 !*.dat
 !Makefile
