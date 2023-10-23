@@ -5,7 +5,7 @@ OBJECTS = $(subst .c,.o,$(SOURCES))
 
 all : histogram 
 
-coolness : histogram.o
+histogram : histogram.o
 	$(CC) -o histogram $(OBJECTS)
 
 %.o : %.c
