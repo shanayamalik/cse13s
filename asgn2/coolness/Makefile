@@ -11,3 +11,5 @@ coolness : coolness.o
 %.o : %.c
 	$(CC) -c $<
 
+clean:
+	rm -f coolness coolness.o
