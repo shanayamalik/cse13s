@@ -11,3 +11,5 @@ coolness : histogram.o
 %.o : %.c
 	$(CC) -c $<
 
+clean:
+	rm -f histogram histogram.o
