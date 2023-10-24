@@ -20,16 +20,21 @@ float calculate_coolness(float T, float V) {
   return 35.74 + 0.6215 * T - 35.75 * pow(V, 0.16) + 0.4275 * T * pow(V, 0.16);
 }
 
+/* Print one line of output */
+void print_row(float Temp, float Vel, float Cool) {
+  printf("%.1f\t%.1f\t%.1f\n", Temp, Vel, Cool);
+}
+
 /* If no command line arguments are passed, calculate coolness for a range of parameters */
 int main(int argc, char *argv[]) {
   if (argc == 1) {
-    printf("Temp\tWind\tCoolness\n");
+    printf("Temp\tWind\tCoolness");
     for (float T = -10; T <= 40; T += 10) {
+      printf("\n");
       for (float V = 5; V <= 15; V += 5) {
         float C = calculate_coolness(T, V);
-        printf("%5.1f\t%5.1f\t%5.1f\n", T, V, C);
+        print_row(T, V, C);
       }
-    printf("\n");
     }
   } else if (argc == 2) {
     /* If one argument is passed, assume it is a floating point number for temperature, and print a table of calculated coolness values */
@@ -40,7 +45,7 @@ int main(int argc, char *argv[]) {
     printf("Temp\tWind\tCoolness\n");
     for (float V = 5; V <= 15; V += 5) {
       float C = calculate_coolness(T, V);
-      printf("%5.1f\t%5.1f\t%5.1f\n", T, V, C);
+      print_row(T, V, C);
     }
   } else if (argc == 3) {
         /* If two arguments are passed, the first is the temperature and the second is windspeed, assume that both inputs are valid floating point   numbers, and print a single calculated coolness value for those inputs. */
@@ -51,7 +56,7 @@ int main(int argc, char *argv[]) {
       print_error();
     }
     float C = calculate_coolness(T, V);
-    printf("%5.1f\t%5.1f\t%5.1f\n", T, V, C);
+    print_row(T, V, C);
   } else {
     print_usage();
   }
