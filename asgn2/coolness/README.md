@@ -18,3 +18,39 @@ The C program is designed to compute the "coolness" factor based on given temper
 ./coolness               
 ./coolness [temperature] 
 ./coolness [temperature] [wind speed]
+```
+
+## Compilation
+
+To compile the program, utilize the provided Makefile:
+
+```bash
+make
+```
+
+Note: The C math library is required for compilation. Ensure that #include <math.h> is present in coolness.c and -lm is added to the gcc command in the Makefile.
+
+## Testing
+To validate the program's functionality, run the provided testing script:
+
+```bash
+bash -v testing.sh >& testing.out
+```
+
+This command will execute the tests, display each command as it runs, and save the results to testing.out.
+
+## Directory Structure
+Ensure your project directory adheres to the following structure:
+```bash
+asgn2
+|-- coolness
+|   |-- .gitignore
+|   |-- coolness.c
+|   |-- testing.out
+|   |-- testing.sh
+|   |-- Makefile
+|   |-- README.md
+|-- histogram
+```
+
+Note: Please refrain from submitting executables or .o files. They will be generated using the Makefile during the grading process.
