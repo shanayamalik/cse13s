@@ -18,11 +18,3 @@ The C program is designed to compute the "coolness" factor based on given temper
 ./coolness               
 ./coolness [temperature] 
 ./coolness [temperature] [wind speed]
-
-## Compilation
-
-To compile the program, utilize the provided Makefile:
-```bash
-make
-
-Note: The C math library is required for compilation. Ensure that #include <math.h> is present in coolness.c and -lm is added to the gcc command in the Makefile.
