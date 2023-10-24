@@ -9,7 +9,8 @@ void print_usage() {
   exit(1); 
 } 
 
-/* Print the usage message and exit the program with error code 1 if either of the arguments are unacceptable */
+/* Print the usage message and exit the program with error code 1, 
+   if either of the arguments are unacceptable */
 void print_error() {
   printf("Error: Coolness. Acceptable input values are -99<=T<=50 and   0.5<=V.\n");
   exit(1);
@@ -48,7 +49,9 @@ int main(int argc, char *argv[]) {
       print_row(T, V, C);
     }
   } else if (argc == 3) {
-        /* If two arguments are passed, the first is the temperature and the second is windspeed, assume that both inputs are valid floating point   numbers, and print a single calculated coolness value for those inputs. */
+    /* If two arguments are passed, the first is the temperature and the second is windspeed.
+       Assume that both inputs are valid floating point numbers. 
+       Print a single calculated coolness value for those inputs. */
     printf("Temp\tWind\tCoolness\n");
     float T = atof(argv[1]);
     float V = atof(argv[2]);
