@@ -20,6 +20,7 @@ The C program is designed to compute the "coolness" factor based on given temper
 ./coolness [temperature] [wind speed] # Two arguments
 
 ## Compilation
+
 To compile the program, utilize the provided Makefile:
 ```bash
     make
