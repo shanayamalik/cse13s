@@ -40,7 +40,7 @@ bash -v testing.sh >& testing.out
 This command will execute the tests, display each command as it runs, and save the results to testing.out.
 
 ## Directory Structure
-Ensure your project directory adheres to the following structure:
+The project directory includes the following files:
 ```bash
 asgn2
 |-- coolness
