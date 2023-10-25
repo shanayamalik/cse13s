@@ -39,18 +39,4 @@ bash -v testing.sh >& testing.out
 
 This command will execute the tests, display each command as it runs, and save the results to testing.out.
 
-## Directory Structure
-The project directory includes the following files:
-```bash
-asgn2
-|-- coolness
-|   |-- .gitignore
-|   |-- coolness.c
-|   |-- testing.out
-|   |-- testing.sh
-|   |-- Makefile
-|   |-- README.md
-|-- histogram
-```
-
 Note: Please refrain from submitting executables or .o files. They will be generated using the Makefile during the grading process.
