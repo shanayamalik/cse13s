@@ -12,7 +12,7 @@ void print_usage() {
 /* Print the usage message and exit the program with error code 1, 
    if either of the arguments are unacceptable */
 void print_error() {
-  printf("Error: Coolness. Acceptable input values are -99<=T<=50 and   0.5<=V.\n");
+  printf("Error: Coolness. Acceptable input values are -99<=T<=50 and 0.5<=V.\n");
   exit(1);
 }
 
