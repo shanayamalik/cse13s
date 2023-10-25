@@ -7,10 +7,13 @@
 /* Declare the array, bins, and initialize all the elements to size zero. 
    The size of each bin should begin at the value of one */
 int main() {
-  int bins[BINS] = {0};
+
+  int bins[BINS] = {0}; /* Initialize the array to zero values. */
   int bin_size = 1;
   int max_val = bin_size * BINS;
   int value;
+
+  printf("16 bins of size 1 for range [0,16)\n");
 
   /* Read integers from the standard input until the end of the file has been reached. 
      The smallest integer is assumed to be 0, and if any value is  negative, that integer will be ignored. */
