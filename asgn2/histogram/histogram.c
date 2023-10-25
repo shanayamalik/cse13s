@@ -47,9 +47,6 @@ int main() {
      The inner loop prints asterisks based on the count in each bin. */
   for (int i = 0; i < BINS; i++) {
     printf("[%3d:%3d] ", i*bin_size, (i+1)*bin_size-1);
-    /*if (bins[i] > 0) {
-      printf(" ");
-    }*/
     for (int j = 0; j < bins[i]; j++) {
       printf("*");
     }
