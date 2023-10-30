@@ -7,10 +7,10 @@ OBJ=test_password_checker.o password_checker.o
 HEADER=password_checker.h
 
 password_checker: ${OBJ} ${HEADER}
-       	$(CC) $(OBJ) -o password_checker
+	$(CC) $(OBJ) -o password_checker
 
 %.o : %.c $(HEADER)
-       	$(CC) -c $<
+	$(CC) -c $<
 
 clean:
 	rm -f password_checker
