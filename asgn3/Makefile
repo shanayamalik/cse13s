@@ -1,14 +1,17 @@
-CC=
+CC=gcc
+
 SOURCE=test_password_checker.c password_checker.c
+
 OBJ=test_password_checker.o password_checker.o
+
 HEADER=password_checker.h
 
 password_checker: ${OBJ} ${HEADER}
-    $(CC) $(OBJ) -o password_checker
+       	$(CC) $(OBJ) -o password_checker
 
-%.o: %.c $(HEADER)
-    $(CC) $< -c
+%.o : %.c $(HEADER)
+       	$(CC) -c $<
 
 clean:
-    rm -rf password_checker
-    rm -rf *.o
+	rm -f password_checker
+	rm -f *.o
