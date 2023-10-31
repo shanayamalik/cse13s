@@ -2,7 +2,7 @@
 #include <stdio.h>
 #include "password_checker.h"
 
-void main() {
+int main() {
     printf("Running tests...\n\n");
 
     const char *test1_first = "Abraham";
