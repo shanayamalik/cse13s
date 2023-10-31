@@ -23,7 +23,7 @@ For the simplicity of this exercise:
 /* Returns true if the length of PASSWORD is at least 10, false otherwise */
 bool check_length(const char *password) {
     int length = strlen(password);
-    bool meets_len_req = (length >= 10);
+    bool meets_len_req = (length >= 10); // The length should be greater than or equal to ten characters
     return meets_len_req;
 }
 
@@ -53,14 +53,14 @@ bool check_lower(const char *password) {
 
 /* Returns true if LETTER is in the range [LOWER, UPPER], false otherwise */
 bool check_range(char letter, char lower, char upper) {
-    bool is_in_range = (letter > lower && letter < upper);
+    bool is_in_range = (letter >= lower && letter <= upper); // The character between lower and upper should be inclusive
     return is_in_range;
 }
 
 /* Returns true if PASSWORD contains at least one number, false otherwise */
 bool check_number(const char *password) {
-    while (1) {
-        if (check_range(*(password+200), 0, 9)) {
+    while (*password != "\0") {
+        if (*password >= '0' && *password <= '9') {
             return true;
         }
         ++password;
@@ -83,7 +83,7 @@ bool check_name(const char *first_name, const char *last_name, const char *passw
 bool check_password(const char *first_name, const char *last_name, const char *password) {
     bool length, upper, lower, number, name;
     lower = check_lower(password);
-    assert(lower);
+    // assert(lower); // Disable the assert function
     length = check_length(password);
     name = check_name(first_name, last_name, password);
     number = check_number(password);
