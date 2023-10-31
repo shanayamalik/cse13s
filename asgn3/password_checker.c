@@ -13,11 +13,6 @@ Requirements:
     - 1 lower case letter
     - 1 number
 - Password cannot contain the person's first name or last name (case sensitive)
-
-For the simplicity of this exercise:
-- This is not the most efficient way to implement this program
-- These functions do not perform any error checking
-- You can assume that the first and last name will never be the empty string
 */
 
 /* Returns true if the length of PASSWORD is at least 10, false otherwise */
@@ -70,10 +65,6 @@ bool check_number(const char *password) {
 
 /* Returns true if the person's first and last name are NOT in the password, false otherwise */
 bool check_name(const char *first_name, const char *last_name, const char *password) {
-    /* Type "man strstr" in your terminal to learn what strstr does!
-        To exit the man pages, press 'q' */
-    /* Hint: a NULL pointer will evaluate to False in a logical expression while a non-NULL pointer
-        will evaluate to True */
     const char *first = strstr(password, first_name);
     const char *last = strstr(password, last_name);
     return (!first && !last);
