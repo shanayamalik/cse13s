@@ -1,7 +1,5 @@
 # CSE 13S Programming Assignment 3: Password Checker
 
-Shanaya Malik
-
 ## Overview
 
 This assignment is focused on developing a password validation system in C. The program checks whether a given password meets specific requirements, such as length, character inclusion (uppercase, lowercase, and numbers), and ensuring the password does not contain the user's first or last name.
