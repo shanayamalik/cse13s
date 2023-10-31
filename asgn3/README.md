@@ -19,5 +19,22 @@ To compile the code, navigate to the directory containing the source files and r
 
 ```sh
 make
+``` 
+
+## Running the Tests
+
+```sh
+./password_checker
+``` 
+
+The program will execute several test cases to ensure the password checker is functioning correctly.
 
 
+Files Submitted
+
+- .gitignore
+- password_checker.c
+- password_checker.h
+- test_password_checker.c
+- README.md
+- Makefile
