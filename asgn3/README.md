@@ -1,4 +1,6 @@
-# Password Checker Assignment
+# CSE 13S Programming Assignment 3: Password Checker
+
+Shanaya Malik
 
 ## Overview
 
@@ -30,7 +32,7 @@ make
 The program will execute several test cases to ensure the password checker is functioning correctly.
 
 
-Files Submitted
+## Files Submitted
 
 - .gitignore
 - password_checker.c
