@@ -20,10 +20,12 @@ For the simplicity of this exercise:
 - You can assume that the first and last name will never be the empty string
 */
 
+bool check_range(char letter, char lower, char upper);
+
 /* Returns true if the length of PASSWORD is at least 10, false otherwise */
 bool check_length(const char *password) {
     int length = strlen(password);
-    bool meets_len_req = (length <= 10);
+    bool meets_len_req = (length >= 10);
     return meets_len_req;
 }
 
