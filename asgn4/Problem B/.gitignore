@@ -1,0 +1,3 @@
+*.o
+check_cycle
+growing_arrays
