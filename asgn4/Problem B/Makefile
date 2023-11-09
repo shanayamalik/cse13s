@@ -8,7 +8,7 @@ CFLAGS=-Wall -Wextra -Wpedantic
 TARGET=growing_arrays
 
 # Define object files
-OBJ=growing_arrays.o main.o
+OBJ=growing_arrays.o
 
 # Default target
 all: $(TARGET)
@@ -19,9 +19,6 @@ $(TARGET): $(OBJ)
 
 # Compile the source files into object files
 growing_arrays.o: growing_arrays.c growing_arrays.h
-	$(CC) $(CFLAGS) -c $<
-
-main.o: main.c growing_arrays.h
 	$(CC) $(CFLAGS) -c $<
 
 # Clean target for removing compiled files
