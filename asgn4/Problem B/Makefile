@@ -1,29 +1,18 @@
-# Define compiler
 CC=gcc
-
-# Define flags
 CFLAGS=-Wall -Wextra -Wpedantic
-
-# Define the target executable
 TARGET=growing_arrays
+OBJ=growing_arrays.o test_growing_arrays.o
 
-# Define object files
-OBJ=growing_arrays.o
-
-# Default target
 all: $(TARGET)
 
-# Link the object files into the executable
 $(TARGET): $(OBJ)
 	$(CC) $(CFLAGS) -o $@ $^
 
-# Compile the source files into object files
 growing_arrays.o: growing_arrays.c growing_arrays.h
 	$(CC) $(CFLAGS) -c $<
 
-# Clean target for removing compiled files
+test_growing_arrays.o: test_growing_arrays.c growing_arrays.h
+	$(CC) $(CFLAGS) -c $<
+
 clean:
 	rm -f $(TARGET) $(OBJ)
-
-# Phony targets
-.PHONY: all clean
