@@ -67,6 +67,7 @@ Record empty_record = {0};
     return empty_record;
 }
 
+/* Commenting out main function
 // Testing code. You can modify this and check your own test cases.
 int main() {
     table.nval = 0;
@@ -97,6 +98,7 @@ int main() {
     free(table.record);
     return 0;
 }
+*/
 
 /*
 Output for the above testing code:
