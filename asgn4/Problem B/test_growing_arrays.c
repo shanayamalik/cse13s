@@ -1,6 +1,6 @@
 #include "growing_arrays.h" 
 // Testing code. You can modify this and check your own test cases.
-struct Table table;
+extern struct Table table;
 int main(int argc, char **argv) {
     table.nval = 0;
     table.max = INIT_SIZE;
