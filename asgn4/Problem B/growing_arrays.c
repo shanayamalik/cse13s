@@ -13,7 +13,9 @@ struct Table {
     int nval;   // current number of records
     int max;    // allocated number of records
     Record *record; // array of records, i.e., name-id pairs
-} table;
+}; 
+
+struct Table table;
 
 // initial size is 1, grow 2x of the existing size when it is full
 enum { INIT_SIZE = 1, GROW_SIZE = 2 };
