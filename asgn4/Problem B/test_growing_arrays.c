@@ -4,7 +4,7 @@ extern struct Table table;
 int main(int argc, char **argv) {
     table.nval = 0;
     table.max = INIT_SIZE;
-    table.record = malloc(sizeof(Record) * table.max);
+    table.record = calloc(sizeof(Record) * table.max);
 
     // test add_record
     Record r1 = {"Alice", 1};
