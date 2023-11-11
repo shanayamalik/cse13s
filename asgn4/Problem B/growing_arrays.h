@@ -11,7 +11,7 @@ typedef struct Record {
     int id;
 } Record;
 
-extern struct Table {
+struct Table {
     int nval;   // current number of records
     int max;    // allocated number of records
     Record *record; // array of records, i.e., name-id pairs
