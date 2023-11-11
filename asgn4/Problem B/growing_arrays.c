@@ -69,7 +69,7 @@ Record empty_record = {0};
     return empty_record;
 }
 
-/* Commenting out main function
+
 // Testing code. You can modify this and check your own test cases.
 int main() {
     table.nval = 0;
@@ -96,7 +96,7 @@ int main() {
     printf("deleted record with name 'Bob': %d\n", success);
     id = get_id("Bob");
     printf("record with name 'Bob': id=%d\n", id);
-*/
+
     free(table.record);
     return 0;
 }
