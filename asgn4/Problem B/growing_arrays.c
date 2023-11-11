@@ -1,7 +1,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include "growing_arrays.h"
 
+struct Table table;
+
+/*
 struct Record {
     char *name;
     int id;
@@ -17,8 +21,11 @@ struct Table {
 
 struct Table table;
 
+
 // initial size is 1, grow 2x of the existing size when it is full
 enum { INIT_SIZE = 1, GROW_SIZE = 2 };
+*/
+
 
 // returns the index of the item added  
 int add_record(Record new_record) {
