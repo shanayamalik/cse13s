@@ -5,28 +5,6 @@
 
 struct Table table;
 
-/*
-struct Record {
-    char *name;
-    int id;
-};
-typedef struct Record Record;
-
-// to keep track of number of records and also as an array of records
-struct Table {
-    int nval;   // current number of records
-    int max;    // allocated number of records
-    Record *record; // array of records, i.e., name-id pairs
-}; 
-
-struct Table table;
-
-
-// initial size is 1, grow 2x of the existing size when it is full
-enum { INIT_SIZE = 1, GROW_SIZE = 2 };
-*/
-
-
 // returns the index of the item added  
 int add_record(Record new_record) {
     if (table.nval == table.max) {
