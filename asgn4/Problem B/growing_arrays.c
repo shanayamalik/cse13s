@@ -96,11 +96,10 @@ int main() {
     printf("deleted record with name 'Bob': %d\n", success);
     id = get_id("Bob");
     printf("record with name 'Bob': id=%d\n", id);
-
+*/
     free(table.record);
     return 0;
 }
-*/
 
 /*
 Output for the above testing code:
