@@ -1,7 +1,8 @@
 CC=gcc
 CFLAGS=-Wall -Wextra -Wpedantic
 TARGET=growing_arrays
-OBJ=growing_arrays.o test_growing_arrays.o
+OBJ=growing_arrays.o 
+#test_growing_arrays.o
 
 all: $(TARGET)
 
