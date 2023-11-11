@@ -56,6 +56,7 @@ Record empty_record = {0};
 
 
 // Testing code. You can modify this and check your own test cases.
+/*
 int main() {
     shanaya_table.nval = 0;
     shanaya_table.max = INIT_SIZE;
@@ -85,6 +86,7 @@ int main() {
     free(shanaya_table.record);
     return 0;
 }
+*/
 
 /*
 Output for the above testing code:
