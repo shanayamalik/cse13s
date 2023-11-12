@@ -29,12 +29,13 @@ int add_record(Record new_record) {
     printf("\n ADD RECORD: %s", new_record.name);
     print_table();
     if (new_size > table.max) {
-	// we need to malloc more 
-        printf("\n We need to malloc more: %d", new_size);
-        new_records = realloc(table.record, new_size * sizeof(Record));
+	    // we need to malloc more 
+	    int new_max = table.max * 2;
+        printf("\n We need to malloc more: %d", new_max);
+        new_records = realloc(table.record, new_max * sizeof(Record));
         if (!new_records) return -1;
         table.record = new_records;
-	table.max = new_size;
+	    table.max = new_max;
     }
     table.record[new_size-1] = new_record;
     table.nval = new_size;
