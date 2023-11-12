@@ -10,7 +10,6 @@ struct Table shanaya_table;
 // returns the index of the item added  
 int add_record(Record new_record) {
     Record *new_records;
-    // printf("\n Adding %s", new_record.name);
     int new_size = shanaya_table.nval + 1;
     if (shanaya_table.record == 0)
         new_records = malloc(new_size * sizeof(Record));
@@ -87,7 +86,7 @@ Record get_record(int index) {
         return shanaya_table.record[index];
     }
     // If the index is invalid, return a default Record
-Record empty_record = {0};
+    Record empty_record = {0};
     return empty_record;
 }
 
@@ -95,6 +94,7 @@ Record empty_record = {0};
 
 // Testing code. You can modify this and check your own test cases.
 int main() {
+    int success;
     shanaya_table.nval = 0;
     shanaya_table.record = 0;
 
@@ -103,39 +103,34 @@ int main() {
     Record r2 = {"Bob", 2};
     Record r3 = {"Charlie", 3};
 
-    printf("nval =%d\n", shanaya_table.nval);
     int i1 = add_record(r1);
-    print_table();
-
-    printf("nval =%d\n", shanaya_table.nval);
     int i2 = add_record(r2);
-    print_table();
-
-    printf("nval =%d\n", shanaya_table.nval);
     int i3 = add_record(r3);
-    print_table();
-    printf("nval =%d\n", shanaya_table.nval);
     printf("added records at indices %d, %d, %d\n", i1, i2, i3);
 
-    // test del_record
-    printf("deleting  record with name 'Charlie'\n");
-    del_record("Charlie");
-    print_table();
-    printf("nval =%d\n", shanaya_table.nval);
+    // test get_id and get_record
+    Record r = get_record(i1);
+    printf("record at index %d: name=%s, id=%d\n", i1, r.name, r.id);
+
+    int id = get_id("Bob");
+    printf("record with name 'Bob': id=%d\n", id);
 
     // test del_record
-    printf("deleting  record with name 'Bob\n");
-    del_record("Bob");
-    print_table();
-    printf("nval =%d\n", shanaya_table.nval);
+    success = del_record("Bob");
+    printf("deleted record with name 'Bob' : %d\n", success);
 
     // test del_record
-    printf("deleting record with name 'Alice'\n");
-    del_record("Alice");
-    print_table();
-    printf("nval =%d\n", shanaya_table.nval);
+    success = del_record("Charlie");
+    printf("deleted record with name 'Charlie' : %d\n", success);
 
-    printf("nval =%d\n", shanaya_table.nval);
+    // test del_record
+    success = del_record("Alice");
+    printf("deleted record with name 'Alice' : %d\n", success);
+
+    // test del_record
+    success = del_record("Alice");
+    printf("deleted record with name 'Alice' : %d\n", success);
+
     if (shanaya_table.nval > 0)
         free(shanaya_table.record);
     return 0;
