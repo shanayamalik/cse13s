@@ -3,7 +3,7 @@
 #include <string.h>
 #include "growing_arrays.h"
 
-#define NOT_COMMENT_MAIN 1
+#define NOT_COMMENT_MAIN 0
 
 struct Table shanaya_table;
 
