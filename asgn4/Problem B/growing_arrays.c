@@ -70,6 +70,7 @@ int del_record(const char *name) {
         }
     }
     new_size = table.nval - 1;
+	/*
     if (new_size > 0) {
         Record *new_records = realloc(table.record, new_size * sizeof(Record));
         if (!new_records) return 0;
@@ -77,6 +78,8 @@ int del_record(const char *name) {
         table.nval--;
 		table.max -= 1;
     }
+	*/
+    table.nval = new_size;
 	print_table();
     return (1);
 }
