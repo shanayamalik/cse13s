@@ -26,17 +26,28 @@ int add_record(Record new_record) {
 // return 1 if there is a matching record and deletes it and 
 // moves records
 int del_record(const char *name) {
-    for (int i = 0; i < shanaya_table.nval; i++) {
+    int i, j;
+    int found = 0;
+
+    for (i = 0; i < shanaya_table.nval; i++) {
         if (strcmp(shanaya_table.record[i].name, name) == 0) {
-            if (i != (shanaya_table.nval - 1)) {
-                memmove(&shanaya_table.record[i], &shanaya_table.record[i + 1], (shanaya_table.nval - i - 1) * sizeof(Record));
-	    }
-            shanaya_table.nval--;
-            return 1;
+            j = i;
+	    found = 1;
+	    break;
         }
     }
-    return 0; // No matching record found
-}  
+    if (!found)
+        return 0; // No matching record found
+		  
+    if ( j < (shanaya_table.nval - 1)) {
+        for (i = j; i < shanaya_table.nval; i++) {
+            shanaya_table.record[j].name = shanaya_table.record[j+1].name;
+            shanaya_table.record[j].id = shanaya_table.record[j+1].id;
+        }
+    }
+    shanaya_table.nval--;
+    return (1);
+} 
 
 // returns id of student record of the first matching record
 int get_id(const char *name) {
