@@ -19,7 +19,7 @@ struct Table {
 
 extern struct Table table;
 
-enum { INIT_SIZE = 1, GROW_SIZE = 1 };
+enum { INIT_SIZE = 1, GROW_SIZE = 2 };
 
 int add_record(Record record);
 
