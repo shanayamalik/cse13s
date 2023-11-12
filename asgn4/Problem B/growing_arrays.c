@@ -3,6 +3,8 @@
 #include <string.h>
 #include "growing_arrays.h"
 
+#define NOT_COMMENT_MAIN 0
+
 struct Table shanaya_table;
 
 // returns the index of the item added  
@@ -26,7 +28,9 @@ int add_record(Record new_record) {
 int del_record(const char *name) {
     for (int i = 0; i < shanaya_table.nval; i++) {
         if (strcmp(shanaya_table.record[i].name, name) == 0) {
-            memmove(&shanaya_table.record[i], &shanaya_table.record[i + 1], (shanaya_table.nval - i - 1) * sizeof(Record));
+            if (i != (shanaya_table.nval - 1)) {
+                memmove(&shanaya_table.record[i], &shanaya_table.record[i + 1], (shanaya_table.nval - i - 1) * sizeof(Record));
+	    }
             shanaya_table.nval--;
             return 1;
         }
@@ -54,9 +58,9 @@ Record empty_record = {0};
     return empty_record;
 }
 
+#if NOT_COMMENT_MAIN
 
 // Testing code. You can modify this and check your own test cases.
-/*
 int main() {
     shanaya_table.nval = 0;
     shanaya_table.max = INIT_SIZE;
@@ -77,16 +81,31 @@ int main() {
     printf("record at index %d: name=%s, id=%d\n", i1, r.name, r.id);
     printf("record with name 'Bob': id=%d\n", id);
 
+    id = get_id("Charlie");
+    printf("record with name 'Charlie': id=%d\n", id);
     // test del_record
-    int success = del_record("Bob");
+    int success = del_record("Charlie");
+    printf("deleted record with name 'Charlie': %d\n", success);
+    id = get_id("Charlie");
+    printf("record with name 'Charlie': id=%d\n", id);
+
+    // test del_record
+    success = del_record("Bob");
     printf("deleted record with name 'Bob': %d\n", success);
     id = get_id("Bob");
     printf("record with name 'Bob': id=%d\n", id);
 
+    // test del_record
+    success = del_record("Alice");
+    printf("deleted record with name 'Alice': %d\n", success);
+    id = get_id("Alice");
+    printf("record with name 'Alice': id=%d\n", id);
+
     free(shanaya_table.record);
     return 0;
 }
-*/
+
+#endif
 
 /*
 Output for the above testing code:
