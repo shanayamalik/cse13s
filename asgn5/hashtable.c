@@ -96,7 +96,7 @@ void hashtable_print(hashtable_t *ht, FILE *fp, void (*itemprint)(FILE *fp, cons
     // Iterate over each slot and print its contents
     for (int i = 0; i < ht->slots; i++) {
         set_t *slot = ht->table[i];
-        set_iterate(slot, fp, itemprint);
+        set_print(slot, fp, itemprint);
     }
 }
 
