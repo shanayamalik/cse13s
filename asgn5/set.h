@@ -1,6 +1,9 @@
 #ifndef SET_H_
 #define SET_H_
+#include <stdbool.h> //Include for bool type 
+#include <stdio.h> //Include for FILE*s below
 
+typedef struct set set_t; //Define the set_t type
 
 /* Create a new (empty) set; return NULL if error. */
 set_t* set_new(void);

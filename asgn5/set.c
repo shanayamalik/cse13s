@@ -90,7 +90,7 @@ void set_print(set_t *set, FILE *fp, void (*itemprint)(FILE *fp, const char *key
 }
 
 // Iterate over the set and apply a function to each item
-void set_iterate(set_t *set, void (*itemfunc)(void *arg, const char *key, void *item), void *arg) {
+void set_iterate(set_t *set, void *arg, void (*itemfunc)(void *arg, const char *key, void *item)) {
     if (set == NULL || itemfunc == NULL) {
         return; // Check for null pointers
     }
