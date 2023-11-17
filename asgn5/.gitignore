@@ -1,0 +1,7 @@
+*.o
+hashtableout*
+setout*
+test_hashtable
+test_set
+test_lru
+test_LRU
