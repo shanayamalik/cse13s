@@ -85,7 +85,7 @@ int main(){
   lru_t *dailyCheese = lru_new(10);
 
   Record* r1 = newRecord("cheddar cheese");
-  Record* r2 = newREcord("brie");
+  Record* r2 = newRecord("brie");
 	
   // insertion
   assert(lru_insert(dailyCheese, "monday", r1));
