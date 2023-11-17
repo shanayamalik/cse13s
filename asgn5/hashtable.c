@@ -3,6 +3,11 @@
 #include "hashtable.h"
 #include "set.h"
 
+typedef struct hashtable {
+    int slots;
+    set_t **table;
+} hashtable_t;
+
 // Basic hash function for strings
 static unsigned long hash_string(const char *str) {
     unsigned long hash = 5381;
@@ -17,29 +22,30 @@ static unsigned long hash_string(const char *str) {
 }
 
 // Create a new (empty) hashtable
-hashtable_t *hashtable_new(const int num_slots) {
+hashtable_t *hashtable_new(const int slots) {
     hashtable_t *ht = malloc(sizeof(hashtable_t));
     if (ht == NULL) {
         return NULL; // Return NULL if memory allocation fails
     }
 
     // Allocate memory for the array of set pointers
-    ht->slots = malloc(sizeof(set_t *) * num_slots);
-    if (ht->slots == NULL) {
+    ht->slots = slots;
+    ht->table = malloc(sizeof(set_t *) * slots);
+    if (ht->table == NULL) {
         free(ht); // Free previously allocated memory
         return NULL;
     }
 
-    ht->num_slots = num_slots;
+    ht->slots = slots;
     // Initialize each set in the array
-    for (int i = 0; i < num_slots; i++) {
-        ht->slots[i] = set_new();
-        if (ht->slots[i] == NULL) {
+    for (int i = 0; i < slots; i++) {
+        ht->table[i] = set_new();
+        if (ht->table[i] == NULL) {
             // Cleanup in case of failure
             for (int j = 0; j < i; j++) {
-                set_delete(ht->slots[j], NULL);
+                set_delete(ht->table[j], NULL);
             }
-            free(ht->slots);
+            free(ht->table);
             free(ht);
             return NULL;
         }
@@ -56,15 +62,15 @@ bool hashtable_insert(hashtable_t *ht, const char *key, void *item) {
 
     // Calculate hash and determine the appropriate slot
     unsigned long hash = hash_string(key);
-    int slot = hash % ht->num_slots;
+    int slot = hash % ht->slots;
 
     // Check if key already exists in the set
-    if (set_find(ht->slots[slot], key) != NULL) {
+    if (set_find(ht->table[slot], key) != NULL) {
         return false;
     }
 
     // Insert new item into the set
-    return set_insert(ht->slots[slot], key, item);
+    return set_insert(ht->table[slot], key, item);
 }
 
 // Find item by key in the hashtable
@@ -75,10 +81,10 @@ void *hashtable_find(hashtable_t *ht, const char *key) {
 
     // Calculate hash and determine the appropriate slot
     unsigned long hash = hash_string(key);
-    int slot = hash % ht->num_slots;
+    int slot = hash % ht->slots;
 
     // Find and return the item from the set
-    return set_find(ht->slots[slot], key);
+    return set_find(ht->table[slot], key);
 }
 
 // Print the hashtable
@@ -88,8 +94,8 @@ void hashtable_print(hashtable_t *ht, FILE *fp, void (*itemprint)(FILE *fp, cons
     }
 
     // Iterate over each slot and print its contents
-    for (int i = 0; i < ht->num_slots; i++) {
-        set_t *slot = ht->slots[i];
+    for (int i = 0; i < ht->slots; i++) {
+        set_t *slot = ht->table[i];
         set_iterate(slot, fp, itemprint);
     }
 }
@@ -101,8 +107,8 @@ void hashtable_iterate(hashtable_t *ht, void *arg, void (*itemfunc)(void *arg, c
     }
 
     // Iterate over each slot and apply the function to its items
-    for (int i = 0; i < ht->num_slots; i++) {
-        set_t *slot = ht->slots[i];
+    for (int i = 0; i < ht->slots; i++) {
+        set_t *slot = ht->table[i];
         set_iterate(slot, arg, itemfunc);
     }
 }
@@ -114,11 +120,11 @@ void hashtable_delete(hashtable_t *ht, void (*itemdelete)(void *item)) {
     }
 
     // Delete each set and free the memory for the array of sets
-    for (int i = 0; i < ht->num_slots; i++) {
-        set_delete(ht->slots[i], itemdelete);
+    for (int i = 0; i < ht->slots; i++) {
+        set_delete(ht->table[i], itemdelete);
     }
 
-    free(ht->slots);
+    free(ht->table);
     free(ht);
 }
 
