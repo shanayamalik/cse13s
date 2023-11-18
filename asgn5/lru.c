@@ -1,8 +1,6 @@
 #include "lru.h"
 #include "set.h"
 #include "hashtable.h"
-#include <stdlib.h>
-#include <string.h>
 
 // Define a structure for the LRU cache
 typedef struct lru_cache {
