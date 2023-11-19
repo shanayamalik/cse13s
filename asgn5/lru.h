@@ -1,5 +1,5 @@
-#ifndef HASH_H_
-#define HASH_H_
+#ifndef LRU_H_
+#define LRU_H_
 
 #include <stdbool.h>
 #include <stdio.h>
@@ -41,4 +41,4 @@ void lru_iterate(lru_t *ht, void *arg,
 void lru_delete(lru_t *ht, void (*itemdelete)(void *item) );
 
 
-#endif //HASH_H_
+#endif //LRU_H_

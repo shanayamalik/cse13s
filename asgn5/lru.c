@@ -20,22 +20,11 @@ typedef struct lru_cache {
     hashtable_t *hash_table;
     lru_node_t *head;
     lru_node_t *tail;
-} lru_cache_t;
-
-static lru_node_t *create_node(const char *key, void *item) {
-    lru_node_t *node = malloc(sizeof(lru_node_t));
-    if (node) {
-        node->key = strdup(key);
-        node->item = item;
-        node->prev = NULL;
-        node->next = NULL;
-    }
-    return node;
-}
+} lru_t;
 
 // Helper functions
-static void move_to_front(lru_cache_t *cache, lru_node_t *node) {
-    if (node == lru->head) {
+static void move_to_front(lru_t *cache, lru_node_t *node) {
+    if (node == cache->head) {
         return; // If it is already at the front
     }
 
@@ -48,23 +37,23 @@ static void move_to_front(lru_cache_t *cache, lru_node_t *node) {
     }
 
     // Move to front
-    node->next = lru->head;
+    node->next = cache->head;
     node->prev = NULL;
-    if (lru->head) {
-        lru->head->prev = node;
+    if (cache->head) {
+        cache->head->prev = node;
     }
-    lru->head = node;
+    cache->head = node;
 
-    if (node == lru->tail) {
-        lru->tail = node->prev;
+    if (node == cache->tail) {
+        cache->tail = node->prev;
     }
 
-    if (!lru->tail) {
-        lru->tail = node;
+    if (!cache->tail) {
+        cache->tail = node;
     }
 }
 
-static void evict_least_recently_used(lru_cache_t *cache) {
+static void evict_least_recently_used(lru_t *cache) {
     if (cache == NULL || cache->tail == NULL) {
         return; // No item to evict
     }
@@ -82,7 +71,7 @@ static void evict_least_recently_used(lru_cache_t *cache) {
     cache->tail = lru_node->prev;
     
     // Remove the node from the hash table
-    hashtable_delete(cache->hash_table, lru_node->key);
+    hashtable_remove(cache->hash_table, lru_node->key);
 
     // Free the node's resources
     free(lru_node->key);
@@ -92,8 +81,8 @@ static void evict_least_recently_used(lru_cache_t *cache) {
 }
 
 // Create a new LRU cache
-lru_cache_t *lru_new(int capacity) {
-    lru_cache_t *cache = malloc(sizeof(lru_cache_t));
+lru_t *lru_new(int capacity) {
+    lru_t *cache = malloc(sizeof(lru_t));
     if (!cache) {
         // Handle memory allocation failure
         return NULL;
@@ -108,13 +97,14 @@ lru_cache_t *lru_new(int capacity) {
 }
 
 // Insert an item into the LRU cache
-void lru_insert(lru_cache_t *cache, char *key, void *item) {
-    if (!cache || !key) return; // Check the arguments to make sure they exist
+bool lru_insert(lru_t *cache, const char *key, void *item) {
+    if (!cache || !key) return false; // Check the arguments to make sure they exist
     
     if (cache->size >= cache->capacity) {
         evict_least_recently_used(cache);
     }
 
+    // Create a new node
     lru_node_t *node = malloc(sizeof(lru_node_t));
     if (node) {
         node->key = strdup(key);
@@ -134,10 +124,12 @@ void lru_insert(lru_cache_t *cache, char *key, void *item) {
     hashtable_insert(cache->hash_table, key, item);
 
     cache->size++;
+
+    return true;
 }
 
 // Find an item in the LRU cache
-void *lru_find(lru_cache_t *cache, char *key) {
+void *lru_find(lru_t *cache, const char *key) {
     if (!cache || !key) return NULL;  // Check if the arguments exist
 
     lru_node_t *node = hashtable_find(cache->hash_table, key);  // Get node
@@ -149,18 +141,37 @@ void *lru_find(lru_cache_t *cache, char *key) {
 }
 
 // Print the contents of the LRU cache
-void lru_print(lru_cache_t *cache) {
-    // Implement based on your set and hashtable ADTs
+void lru_print(lru_t *cache, FILE *fp, void (*itemprint)(FILE *, const char *, void *)) {
+    if (!itemprint || !cache) return; // Check arguments
+
+    for (lru_node_t *node = cache->head; node != NULL; node = node->next) {
+        itemprint(fp, node->key, node->item);  // Print each item
+    }
 }
 
 // Iterate over the LRU cache
-void lru_iterate(lru_cache_t *cache, void (*itemfunc)(void *arg, const char *key, void *item), void *arg) {
-    // Implement based on your set and hashtable ADTs
+void lru_iterate(lru_t *cache, void *arg, void (*itemfunc)(void *, const char *, void *)) {
+    if (!cache || !itemfunc) return;
+
+    for (lru_node_t *node = cache->head; node != NULL; node = node->next) {
+        itemfunc(arg, node->key, node->item);
+    }
 }
 
 // Delete the LRU cache
-void lru_delete(lru_cache_t *cache) {
+void lru_delete(lru_t *cache, void (*itemdelete)(void *item)) {
+    if (!cache) return;  // Null check to ensure cache is not NULL
+    
     // Clean up resources
-    hashtable_delete(cache->hash_table);
+    // Iterate through the linked list and free each node
+    lru_node_t *current = cache->head;  // Start at the head of the list
+    while (current != NULL) {
+        lru_node_t *next = current->next;  // Store next node before freeing current
+        free(current->key);  // Free the key allocated with strdup
+        free(current);       // Free the node itself
+        current = next;      // Move to the next node
+    }
+
+    hashtable_delete(cache->hash_table, itemdelete);
     free(cache);
 }
