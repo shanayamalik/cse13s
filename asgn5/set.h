@@ -39,4 +39,7 @@ void set_iterate(set_t *set, void *arg,
  */
 void set_delete(set_t *set, void (*itemdelete)(void *item) );
 
+/* delete a single item as per above */
+void set_remove(set_t *set, const char *key);
+
 #endif // SET_H_
