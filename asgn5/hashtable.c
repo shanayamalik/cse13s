@@ -113,16 +113,15 @@ void hashtable_iterate(hashtable_t *ht, void *arg, void (*itemfunc)(void *arg, c
     }
 }
 
-// Delete the hashtable
-void hashtable_delete(hashtable_t *ht, void (*itemdelete)(void *item)) {
-    if (ht == NULL) {
-        return; // Do nothing if hashtable is NULL
+void hashtable_remove(hashtable_t *ht, const char *key) {
+    if (ht == NULL || key == NULL) {
+        return;
     }
 
-    // Delete each set and free the memory for the array of sets
-    for (int i = 0; i < ht->slots; i++) {
-        set_delete(ht->table[i], itemdelete);
-    }
+    int index = hash_function(key, ht->slots);
+    // Assuming set_remove is a function that removes a key-item pair from the set
+    set_remove(ht->table[index], key);
+}
 
     free(ht->table);
     free(ht);
