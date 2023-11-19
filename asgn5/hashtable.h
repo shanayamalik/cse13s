@@ -35,10 +35,8 @@ void hashtable_print(hashtable_t *ht, FILE *fp,
 void hashtable_iterate(hashtable_t *ht, void *arg,
                void (*itemfunc)(void *arg, const char *key, void *item) );
 
-/* Delete the whole hashtable; ignore NULL ht.
- * Provide a function that will delete each item (may be NULL).
- */
-void hashtable_delete(hashtable_t *ht, void (*itemdelete)(void *item) );
+/* delete a single item */
+void hashtable_remove(hashtable_t *ht, const char *key);
 
-
+#endif //HASH_H_
 #endif //HASH_H_
