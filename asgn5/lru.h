@@ -1,6 +1,10 @@
 #ifndef HASH_H_
 #define HASH_H_
 
+#include <stdbool.h>
+#include <stdio.h>
+
+typedef struct lru_cache lru_t;
 
 /* Create a new (empty) lru; return NULL if error. */
 lru_t *lru_new(const int capacity);

@@ -39,4 +39,3 @@ void hashtable_iterate(hashtable_t *ht, void *arg,
 void hashtable_remove(hashtable_t *ht, const char *key);
 
 #endif //HASH_H_
-#endif //HASH_H_
