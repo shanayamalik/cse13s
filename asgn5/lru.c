@@ -1,5 +1,4 @@
 #include "lru.h"
-#include "set.h"
 #include "hashtable.h"
 #include <stdlib.h>
 #include <string.h>
@@ -102,8 +101,7 @@ lru_cache_t *lru_new(int capacity) {
 
     cache->capacity = capacity;
     cache->size = 0;
-    cache->hash_table = hashtable_new(capacity); // Adjust based on hashtable implementation
-    cache->order_set = set_new(); // Adjust based on set implementation
+    cache->hash_table = hashtable_new(capacity); 
     cache->head = NULL;
     cache->tail = NULL;
     return cache;
@@ -111,6 +109,8 @@ lru_cache_t *lru_new(int capacity) {
 
 // Insert an item into the LRU cache
 void lru_insert(lru_cache_t *cache, char *key, void *item) {
+    if (!cache || !key) return; // Check the arguments to make sure they exist
+    
     if (cache->size >= cache->capacity) {
         evict_least_recently_used(cache);
     }
@@ -133,27 +133,19 @@ void lru_insert(lru_cache_t *cache, char *key, void *item) {
     // Insert the item into the hash table
     hashtable_insert(cache->hash_table, key, item);
 
-    // Add the item to the front of the order set/linked list
-    set_insert_front(cache->order_set, key, item);
-
     cache->size++;
 }
 
 // Find an item in the LRU cache
 void *lru_find(lru_cache_t *cache, char *key) {
-    void *item = hashtable_find(cache->hash_table, key);
-    if (item) {
-        // Move the item to the front of the order set/linked list
-        move_to_front(cache, key);
-    }
-    return item;
-}
+    if (!cache || !key) return NULL;  // Check if the arguments exist
 
-// Delete an item from the LRU cache
-void lru_delete(lru_cache_t *cache, char *key) {
-    hashtable_delete(cache->hash_table, key);
-    set_delete(cache->order_set, key);
-    cache->size--;
+    lru_node_t *node = hashtable_find(cache->hash_table, key);  // Get node
+    if (node) {
+        move_to_front(cache, node);  // If the node was the found, move it to the front
+        return node->item;  // Return item from node
+    }
+    return NULL;
 }
 
 // Print the contents of the LRU cache
@@ -170,6 +162,5 @@ void lru_iterate(lru_cache_t *cache, void (*itemfunc)(void *arg, const char *key
 void lru_delete(lru_cache_t *cache) {
     // Clean up resources
     hashtable_delete(cache->hash_table);
-    set_delete(cache->order_set);
     free(cache);
 }

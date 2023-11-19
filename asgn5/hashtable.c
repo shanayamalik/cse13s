@@ -118,10 +118,21 @@ void hashtable_remove(hashtable_t *ht, const char *key) {
         return;
     }
 
-    int index = hash_function(key, ht->slots);
+    int index = hash_string(key);
     // Assuming set_remove is a function that removes a key-item pair from the set
     set_remove(ht->table[index], key);
 }
+
+// Delete the hashtable
+void hashtable_delete(hashtable_t *ht, void (*itemdelete)(void *item)) {
+    if (ht == NULL) {
+        return; // Do nothing if hashtable is NULL
+    }
+
+    // Delete each set and free the memory for the array of sets
+    for (int i = 0; i < ht->slots; i++) {
+        set_delete(ht->table[i], itemdelete);
+    }
 
     free(ht->table);
     free(ht);

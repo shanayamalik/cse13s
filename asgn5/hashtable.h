@@ -38,4 +38,9 @@ void hashtable_iterate(hashtable_t *ht, void *arg,
 /* delete a single item */
 void hashtable_remove(hashtable_t *ht, const char *key);
 
+/* Delete the whole hashtable; ignore NULL ht.
+ * Provide a function that will delete each item (may be NULL).
+ */
+void hashtable_delete(hashtable_t *ht, void (*itemdelete)(void *item) );
+
 #endif //HASH_H_
