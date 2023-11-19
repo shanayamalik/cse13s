@@ -122,3 +122,28 @@ void set_delete(set_t *set, void (*itemdelete)(void *item)) {
     free(set); // Free the set
 }
 
+void set_remove(set_t *set, const char *key) {
+    if (set == NULL || key == NULL) {
+        return;
+    }
+
+    setnode_t *current = set->head;
+    setnode_t *previous = NULL;
+
+    while (current != NULL) {
+        if (strcmp(current->key, key) == 0) {
+            if (previous == NULL) {
+                // Remove from the head of the list
+                set->head = current->next;
+            } else {
+                // Remove from the middle or end of the list
+                previous->next = current->next;
+            }
+            free(current->key);
+            free(current);
+            return;
+        }
+        previous = current;
+        current = current->next;
+    }
+}
