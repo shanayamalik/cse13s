@@ -118,7 +118,7 @@ void hashtable_remove(hashtable_t *ht, const char *key) {
         return;
     }
 
-    int index = hash_string(key);
+    int index = hash_string(key) % ht->slots;
     // Assuming set_remove is a function that removes a key-item pair from the set
     set_remove(ht->table[index], key);
 }
