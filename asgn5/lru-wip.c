@@ -42,13 +42,12 @@ static void move_to_front(lru_t *cache, lru_node_t *node) {
     if (cache->head) {
         cache->head->prev = node;
     }
-
     cache->head = node;
- 
+
     if (node == cache->tail) {
-         cache->tail = node->next;
+        cache->tail = node->next;
     }
- 
+
     // Update the tail if necessary
     if (!cache->tail) {
         cache->tail = node;
@@ -98,18 +97,19 @@ lru_t *lru_new(int capacity) {
     return cache;
 }
 
-  // Insert an item into the LRU cache
-  bool lru_insert(lru_t *cache, const char *key, void *item) {
-     if (!cache || !key || !item) return false; // Check arguments to make sure they exist
-     
-     // Check if the requested addition already exists
-     if (hashtable_find(cache->hash_table, key)) {
-         return false;
-     }
+// Insert an item into the LRU cache
+bool lru_insert(lru_t *cache, const char *key, void *item) {
+    if (!cache || !key || !item) return false; // Check arguments to make sure they exist
+    
+    // Check if the requested addition already exists
+    if (hashtable_find(cache->hash_table, key)) {
+        return false;
+    }
 
-      if (cache->size >= cache->capacity) {
-          evict_least_recently_used(cache);
-      }
+    if (cache->size >= cache->capacity) {
+        evict_least_recently_used(cache);
+    }
+
     // Create a new node
     lru_node_t *node = malloc(sizeof(lru_node_t));
     if (node) {
@@ -126,10 +126,10 @@ lru_t *lru_new(int capacity) {
         }
     }
 
-     // Insert the item into the hash table
-     hashtable_insert(cache->hash_table, key, node);
- 
-     cache->size++;
+    // Insert the item into the hash table
+    hashtable_insert(cache->hash_table, key, node);
+
+    cache->size++;
 
     return true;
 }
@@ -172,15 +172,17 @@ void lru_delete(lru_t *cache, void (*itemdelete)(void *item)) {
     // Iterate through the linked list and free each node
     lru_node_t *current = cache->head;  // Start at the head of the list
     while (current != NULL) {
-      lru_node_t *next = current->next;  // Store next node before freeing current 
-      free(current->key);  // Free the key allocated with strdup
-      if (current->item && itemdelete) {
-          itemdelete(current->item);
-       }
-       free(current);       // Free the node itself
-       current = next;      // Move to the next node
+        lru_node_t *next = current->next;  // Store next node before freeing current
+        free(current->key);  // Free the key allocated with strdup
+	if (current->item) {
+            if (itemdelete) {
+                itemdelete(current->item);
+            }
+    	}
+        free(current);       // Free the node itself
+        current = next;      // Move to the next node
     }
- 
-    hashtable_delete(cache->hash_table, NULL);
+
+    hashtable_delete(cache->hash_table, itemdelete);
     free(cache);
 }
