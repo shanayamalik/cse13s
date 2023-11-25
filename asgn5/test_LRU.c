@@ -80,6 +80,7 @@ int main(){
 
   // delete
   lru_delete(lru1, NULL);
+  lru_delete(lru2, NULL);
 
   // test insert with custom structure Record
   lru_t *dailyCheese = lru_new(10);
