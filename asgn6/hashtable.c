@@ -1,139 +1,80 @@
-#include <stdlib.h>
-#include <string.h>
-#include "hashtable.h"
-#include "set.h"
+#include "bag_hashtable.h"    // Include the header for bag and hashtable structures
+#include "crawler.h"          // Include crawler header for custom memory functions
 
-typedef struct hashtable {
-    int slots;
-    set_t **table;
-} hashtable_t;
+// Custom memory allocation functions with error checking are prototyped in bag_hashtable.h and defined below
+// Redefine the standard allocators to always exit on error to conform with the assignment specification
+#define malloc(size)         mem_malloc(size)
+#define calloc(num, size)    mem_calloc(num, size)
+#define realloc(ptr, size)   mem_realloc(ptr, size)
+#define free(ptr)            mem_free(ptr)
 
-// Basic hash function for strings
-static unsigned long hash_string(const char *str) {
-    unsigned long hash = 5381;
+// Hashtable functions
+// A simple hash function for demonstration purposes
+unsigned int hash_function(const char *key, unsigned int size) {
+    unsigned int hash = 5381;            // Initialize hash value
     int c;
-
-    // Iteratively calculate the hash for each character in the string
-    while ((c = *str++)) {
-        hash = ((hash << 5) + hash) + c; // hash * 33 + c
+    while ((c = *key++)) {         // Iterate through each character in the string
+        hash = ((hash << 5) + hash) + c; /* hash * 33 + c */
     }
-
-    return hash;
+    return hash % size;            // Return the hash value modulo the hashtable size
 }
 
-// Create a new (empty) hashtable
-hashtable_t *hashtable_new(const int slots) {
-    hashtable_t *ht = malloc(sizeof(hashtable_t));
-    if (ht == NULL) {
-        return NULL; // Return NULL if memory allocation fails
+// Function to create a new hashtable
+hashtable_t *hashtable_create(unsigned int size) {
+    hashtable_t *ht = malloc(sizeof(hashtable_t)); // Allocate memory for the hashtable
+    ht->table = calloc(size, sizeof(hashtable_node_t *)); // Allocate and zero-initialize array
+    ht->size = size;              // Set the size of the hashtable
+    return ht;                    // Return the newly created hashtable
+}
+
+// Function to insert a key into the hashtable
+bool hashtable_insert(hashtable_t *ht, const char *key) {
+    unsigned int index = hash_function(key, ht->size); // Calculate the index for the key
+    hashtable_node_t *node = ht->table[index]; // Get the first node at the calculated index
+
+    // Check if the key already exists
+    while (node != NULL) {
+        if (strcmp(node->key, key) == 0) {
+            return false; // Return false if key already exists
+        }
+        node = node->next; // Move to the next node
     }
 
-    // Allocate memory for the array of set pointers
-    ht->slots = slots;
-    ht->table = malloc(sizeof(set_t *) * slots);
-    if (ht->table == NULL) {
-        free(ht); // Free previously allocated memory
-        return NULL;
+    // Insert new key
+    hashtable_node_t *new_node = malloc(sizeof(hashtable_node_t)); // Allocate memory for new node
+    new_node->key = strdup(key); // Duplicate the key
+
+    new_node->next = ht->table[index]; // Link the new node to the beginning of the list
+    ht->table[index] = new_node;       // Insert the new node at the index
+    return true;                       // Return true indicating successful insertion
+}
+
+// Function to look up a key in the hashtable
+bool hashtable_lookup(const hashtable_t *ht, const char *key) {
+    unsigned int index = hash_function(key, ht->size); // Calculate the index for the key
+    hashtable_node_t *node = ht->table[index]; // Get the first node at the calculated index
+
+    while (node != NULL) {
+        if (strcmp(node->key, key) == 0) {
+            return true; // Return true if key is found
+        }
+        node = node->next; // Move to the next node
     }
 
-    ht->slots = slots;
-    // Initialize each set in the array
-    for (int i = 0; i < slots; i++) {
-        ht->table[i] = set_new();
-        if (ht->table[i] == NULL) {
-            // Cleanup in case of failure
-            for (int j = 0; j < i; j++) {
-                set_delete(ht->table[j], NULL);
-            }
-            free(ht->table);
-            free(ht);
-            return NULL;
+    return false; // Return false if key is not found
+}
+
+// Function to destroy a hashtable and free its resources
+void hashtable_destroy(hashtable_t *ht) {
+    for (unsigned int i = 0; i < ht->size; i++) { // Iterate over each slot in the table
+        hashtable_node_t *node = ht->table[i];
+        while (node != NULL) { // Iterate over each node in the list
+            hashtable_node_t *temp = node; // Temporary pointer to the current node
+            node = node->next;            // Move to the next node
+            free(temp->key);              // Free the key of the current node
+            free(temp);                   // Free the current node
         }
     }
-
-    return ht;
-}
-
-// Insert item into the hashtable
-bool hashtable_insert(hashtable_t *ht, const char *key, void *item) {
-    if (ht == NULL || key == NULL || item == NULL) {
-        return false; // Return false if any parameter is NULL
-    }
-
-    // Calculate hash and determine the appropriate slot
-    unsigned long hash = hash_string(key);
-    int slot = hash % ht->slots;
-
-    // Check if key already exists in the set
-    if (set_find(ht->table[slot], key) != NULL) {
-        return false;
-    }
-
-    // Insert new item into the set
-    return set_insert(ht->table[slot], key, item);
-}
-
-// Find item by key in the hashtable
-void *hashtable_find(hashtable_t *ht, const char *key) {
-    if (ht == NULL || key == NULL) {
-        return NULL; // Return NULL if hashtable or key is NULL
-    }
-
-    // Calculate hash and determine the appropriate slot
-    unsigned long hash = hash_string(key);
-    int slot = hash % ht->slots;
-
-    // Find and return the item from the set
-    return set_find(ht->table[slot], key);
-}
-
-// Print the hashtable
-void hashtable_print(hashtable_t *ht, FILE *fp, void (*itemprint)(FILE *fp, const char *key, void *item)) {
-    if (ht == NULL || fp == NULL || itemprint == NULL) {
-        return; // Do nothing if any parameter is NULL
-    }
-
-    // Iterate over each slot and print its contents
-    for (int i = 0; i < ht->slots; i++) {
-        set_t *slot = ht->table[i];
-        set_print(slot, fp, itemprint);
-    }
-}
-
-// Iterate over all items in the hashtable
-void hashtable_iterate(hashtable_t *ht, void *arg, void (*itemfunc)(void *arg, const char *key, void *item)) {
-    if (ht == NULL || itemfunc == NULL) {
-        return; // Do nothing if hashtable or function pointer is NULL
-    }
-
-    // Iterate over each slot and apply the function to its items
-    for (int i = 0; i < ht->slots; i++) {
-        set_t *slot = ht->table[i];
-        set_iterate(slot, arg, itemfunc);
-    }
-}
-
-void hashtable_remove(hashtable_t *ht, const char *key) {
-    if (ht == NULL || key == NULL) {
-        return;
-    }
-
-    int index = hash_string(key) % ht->slots;
-    // Assuming set_remove is a function that removes a key-item pair from the set
-    set_remove(ht->table[index], key);
-}
-
-// Delete the hashtable
-void hashtable_delete(hashtable_t *ht, void (*itemdelete)(void *item)) {
-    if (ht == NULL) {
-        return; // Do nothing if hashtable is NULL
-    }
-
-    // Delete each set and free the memory for the array of sets
-    for (int i = 0; i < ht->slots; i++) {
-        set_delete(ht->table[i], itemdelete);
-    }
-
-    free(ht->table);
-    free(ht);
+    free(ht->table); // Free the array of node pointers
+    free(ht);        // Free the hashtable structure
 }
