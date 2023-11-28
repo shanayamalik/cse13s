@@ -1,46 +1,32 @@
-#ifndef HASH_H_
-#define HASH_H_
+#ifndef BAG_HASHTABLE_H            // Include guard to prevent multiple inclusions
+#define BAG_HASHTABLE_H
 
-#include <stdbool.h>
-#include <stdio.h>
+#include <stdio.h>                 // Include the standard I/O library
+#include <stdlib.h>                // Include for memory allocation functions
+#include <stdbool.h>               // Include for boolean data type
+#include <string.h>                // Include for string manipulation functions
 
-typedef struct hashtable hashtable_t; //Define the hashtable_t type
+#include "crawler.h"               // Include crawler header for webpage_t type
 
-/* Create a new (empty) hashtable; return NULL if error. */
-hashtable_t *hashtable_new(const int num_slots);
+// Structure for a node in the hashtable
+typedef struct hashtable_node {
+    char *key;                     // Pointer to the key string in the hashtable
+    struct hashtable_node *next;   // Pointer to the next node in the hashtable
+} hashtable_node_t;
 
-/* Insert item, identified by key (string), into the given hashtable.
- * The key string is copied for use by the hashtable.
- * Return false if key exists in ht, any parameter is NULL, or error;
- * return true iff new item was inserted.
- */
-bool hashtable_insert(hashtable_t *ht, const char *key, void *item);
+// Structure representing a hashtable
+typedef struct {
+    hashtable_node_t **table;      // Pointer to an array of pointers to hashtable nodes
+    size_t size;                   // Size of the hashtable (number of slots)
+} hashtable_t;
 
-/* Return the item associated with the given key;
- * return NULL if hashtable is NULL, key is NULL, key is not found.
- */
-void *hashtable_find(hashtable_t *ht, const char *key);
+// Function prototype to create a new hashtable
+hashtable_t *hashtable_create(size_t size);
+// Function prototype to insert a key into a hashtable
+bool hashtable_insert(hashtable_t *ht, const char *key);
+// Function prototype to check if a key is in a hashtable
+bool hashtable_lookup(const hashtable_t *ht, const char *key);
+// Function prototype to destroy a hashtable and free its resources
+void hashtable_destroy(hashtable_t *ht);
 
-/* Print the whole table; provide the output file and func to print each item.
- * Ignore if NULL fp. Print (null) if NULL ht.
- * Print a table with no items if NULL itemprint.
- */
-void hashtable_print(hashtable_t *ht, FILE *fp,
-                     void (*itemprint)(FILE *fp, const char *key, void *item));
-
-/* Iterate over all items in the table; in undefined order.
- * Call the given function on each item, with (arg, key, item).
- * If ht==NULL or itemfunc==NULL, do nothing.
- */
-void hashtable_iterate(hashtable_t *ht, void *arg,
-               void (*itemfunc)(void *arg, const char *key, void *item) );
-
-/* delete a single item */
-void hashtable_remove(hashtable_t *ht, const char *key);
-
-/* Delete the whole hashtable; ignore NULL ht.
- * Provide a function that will delete each item (may be NULL).
- */
-void hashtable_delete(hashtable_t *ht, void (*itemdelete)(void *item) );
-
-#endif //HASH_H_
+#endif // BAG_HASHTABLE_H
