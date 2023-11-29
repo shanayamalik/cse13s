@@ -7,7 +7,8 @@
 #include "curl.h"                   // Include the curl library header
 #include "pagedir.h"                // Include the page directory header
 #include "url.h"                    // Include the URL processing header
-#include "bag_hashtable.h"          // Include the bag and hashtable header
+#include "bag.h"
+#include "hashtable.h"
 
 // Custom memory allocation functions with error checking
 // Define custom memory allocation functions with error checking
@@ -39,21 +40,33 @@ void *mem_calloc(size_t num, size_t size) {
 }
 
 char *mem_strdup(const char *s) {
-    char *new_str = strdup(s);      // Duplicate a string using standard strdup
-    if (!new_str) {                 // Check if string duplication failed
-        fprintf(stderr, "Out of memory error on strdup\n");
-        exit(1);                    // Exit program on string duplication failure
+    if (s == NULL) {                  // Check if input string is NULL
+        return NULL;
     }
-    return new_str;                 // Return the duplicated string
+    if (*s == '\0') {                 // Check for empty string
+        return strdup("");            // Return duplicated empty string
+    }
+    char *new_str = strdup(s);        // Duplicate a string using standard strdup
+    if (!new_str) {                   // Check if string duplication failed
+        fprintf(stderr, "Out of memory error on strdup\n");
+        exit(1);                      // Exit program on string duplication failure
+    }
+    return new_str;                   // Return the duplicated string
 }
 
 char *mem_strndup(const char *s, size_t n) {
-    char *new_str = strndup(s, n);  // Duplicate a string up to n characters
-    if (!new_str) {                 // Check if string duplication failed
-        fprintf(stderr, "Out of memory error on strndup\n");
-        exit(1);                    // Exit program on string duplication failure
+    if (s == NULL) {                  // Check if input string is NULL
+        return NULL;
     }
-    return new_str;                 // Return the duplicated string
+    if (*s == '\0' || n == 0) {       // Check for empty string or zero length
+        return strndup("", 0);        // Return duplicated empty string
+    }
+    char *new_str = strndup(s, n);    // Duplicate a string up to n characters
+    if (!new_str) {                   // Check if string duplication failed
+        fprintf(stderr, "Out of memory error on strndup\n");
+        exit(1);                      // Exit program on string duplication failure
+    }
+    return new_str;                   // Return the duplicated string
 }
 
 // Redefine memory and string allocation functions to use those custom versions

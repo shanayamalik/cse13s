@@ -14,14 +14,14 @@ typedef struct {
 } webpage_t;
 
 // Function prototype for malloc_with_check
-void *malloc_with_check(size_t size);   // Custom malloc function with error checking
+void *mem_malloc(size_t size);   // Custom malloc function with error checking
 // Function prototype for realloc_with_check
-void *realloc_with_check(void *ptr, size_t size); // Custom realloc function with error checking
+void *mem_realloc(void *ptr, size_t size); // Custom realloc function with error checking
 // Function prototype for calloc_with_check
-void *calloc_with_check(size_t nmemb, size_t size); // Custom calloc function with error checking
+void *mem_calloc(size_t nmemb, size_t size); // Custom calloc function with error checking
 // Function prototype for strdup_with_check
-char *strdup_with_check(const char *s); // Custom strdup function with error checking
+char *mem_strdup(const char *s); // Custom strdup function with error checking
 // Function prototype for strndup_with_check
-char *strndup_with_check(const char *s, size_t n); // Custom strndup function with error checking
+char *mem_strndup(const char *s, size_t n); // Custom strndup function with error checking
 
 #endif // CRAWLER_H

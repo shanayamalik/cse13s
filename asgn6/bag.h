@@ -1,5 +1,5 @@
-#ifndef BAG_HASHTABLE_H            // Include guard to prevent multiple inclusions
-#define BAG_HASHTABLE_H
+#ifndef BAG_H            // Include guard to prevent multiple inclusions
+#define BAG_H
 
 #include <stdio.h>                 // Include the standard I/O library
 #include <stdlib.h>                // Include for memory allocation functions
@@ -18,3 +18,5 @@ typedef struct bag_node {
 typedef struct {
     bag_node_t *head;              // Pointer to the top node in the bag
 } bag_t;
+
+#endif //BAG_H

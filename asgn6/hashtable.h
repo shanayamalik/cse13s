@@ -1,5 +1,5 @@
-#ifndef BAG_HASHTABLE_H            // Include guard to prevent multiple inclusions
-#define BAG_HASHTABLE_H
+#ifndef HASHTABLE_H            // Include guard to prevent multiple inclusions
+#define HASHTABLE_H
 
 #include <stdio.h>                 // Include the standard I/O library
 #include <stdlib.h>                // Include for memory allocation functions
@@ -29,4 +29,4 @@ bool hashtable_lookup(const hashtable_t *ht, const char *key);
 // Function prototype to destroy a hashtable and free its resources
 void hashtable_destroy(hashtable_t *ht);
 
-#endif // BAG_HASHTABLE_H
+#endif // HASHTABLE_H

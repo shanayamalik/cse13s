@@ -1,12 +1,11 @@
-#include "bag_hashtable.h"    // Include the header for bag and hashtable structures
+#include "hashtable.h"
 #include "crawler.h"          // Include crawler header for custom memory functions
 
-// Custom memory allocation functions with error checking are prototyped in bag_hashtable.h and defined below
+// Custom memory allocation functions with error checking
 // Redefine the standard allocators to always exit on error to conform with the assignment specification
 #define malloc(size)         mem_malloc(size)
 #define calloc(num, size)    mem_calloc(num, size)
 #define realloc(ptr, size)   mem_realloc(ptr, size)
-#define free(ptr)            mem_free(ptr)
 
 // Hashtable functions
 // A simple hash function for demonstration purposes
@@ -20,7 +19,7 @@ unsigned int hash_function(const char *key, unsigned int size) {
 }
 
 // Function to create a new hashtable
-hashtable_t *hashtable_create(unsigned int size) {
+hashtable_t *hashtable_create(size_t size) {
     hashtable_t *ht = malloc(sizeof(hashtable_t)); // Allocate memory for the hashtable
     ht->table = calloc(size, sizeof(hashtable_node_t *)); // Allocate and zero-initialize array
     ht->size = size;              // Set the size of the hashtable

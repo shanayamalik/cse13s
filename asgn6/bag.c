@@ -1,12 +1,11 @@
-#include "bag_hashtable.h"    // Include the header for bag and hashtable structures
 #include "crawler.h"          // Include crawler header for custom memory functions
+#include "bag.h"
 
 // Custom memory allocation functions with error checking are prototyped in bag_hashtable.h and defined below
 // Redefine the standard allocators to always exit on error to conform with the assignment specification
 #define malloc(size)         mem_malloc(size)
 #define calloc(num, size)    mem_calloc(num, size)
 #define realloc(ptr, size)   mem_realloc(ptr, size)
-#define free(ptr)            mem_free(ptr)
 
 // Bag functions
 // Function to create a new bag

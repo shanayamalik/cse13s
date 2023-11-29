@@ -16,7 +16,7 @@ bool pagedir_init(const char *pageDirectory) {
 
     char filePath[256];         // Buffer to hold the complete file path
     // Create the path for the file to mark the directory
-    snprintf(filePath, sizeof(filePath), "%s/.crawler", pageDirectory);
+    snprintf(filePath, sizeof(filePath), "%s/any_name.crawler", pageDirectory);
     FILE *fp = fopen(filePath, "w"); // Open the file for writing
     if (fp == NULL) {           // Check if file opening failed
         fprintf(stderr, "Unable to create file in page directory\n");
