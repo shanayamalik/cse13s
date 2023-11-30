@@ -101,8 +101,9 @@ int parse_args(int argc, char *argv[], char **seedURL, char **pageDirectory, int
 }
 
 // Function to extract links from HTML content
-char **extract_links(const char *html) {
-    const char *link_pattern = "<a href=\"";  // Define the pattern to search for
+// Function to extract links from HTML content
+static char **extract_links(const char *html) {
+    const char *link_pattern = "<a href=";  // Define the pattern to search for
     size_t link_pattern_len = strlen(link_pattern);  // Length of the link pattern
     size_t links_capacity = 10;  // Initial capacity for the array of links
     size_t link_count = 0;       // Counter for the number of links found
@@ -111,7 +112,14 @@ char **extract_links(const char *html) {
     const char *ptr = html;  // Pointer to scan through the HTML content
     while ((ptr = strstr(ptr, link_pattern)) != NULL) {  // Find the link pattern
         ptr += link_pattern_len;  // Move pointer past the link pattern
-        const char *end_quote = strchr(ptr, '\"');  // Find the end of the URL
+
+        char quote_char = *ptr;  // Check if the quote is single or double
+        if (quote_char != '\'' && quote_char != '\"') {
+            continue;  // Skip if it's not a valid quote
+        }
+
+        ptr++;  // Move past the quote
+        const char *end_quote = strchr(ptr, quote_char);  // Find the matching end quote
         if (end_quote == NULL) {
             break;  // Break if malformed HTML (missing end quote)
         }
@@ -122,22 +130,18 @@ char **extract_links(const char *html) {
         // Check if the links array needs to be resized
         if (link_count == links_capacity) {
             links_capacity *= 2;  // Double the capacity
-            char **new_links = realloc(links, links_capacity * sizeof(char *));
-            links = new_links;  // Update the links array pointer
+            links = mem_realloc(links, links_capacity * sizeof(char *));  // Reallocate with new size
         }
 
-        links[link_count++] = url;  // Store the URL and increment the count
-        ptr = end_quote;  // Move the pointer to the end of the current URL
+        links[link_count++] = url;  // Add the new URL to the array
+        ptr = end_quote + 1;  // Move past the end quote for the next search
     }
 
-    // Check and resize the links array to fit one more NULL pointer
-    if (link_count == links_capacity) {
-        char **new_links = realloc(links, (links_capacity + 1) * sizeof(char *));
-        links = new_links;
-    }
-    links[link_count] = NULL;  // Mark the end of the links array
+    // Resize the array to the actual number of links found (plus one for the NULL terminator)
+    links = mem_realloc(links, (link_count + 1) * sizeof(char *));
+    links[link_count] = NULL;  // Null-terminate the array
 
-    return links;  // Return the array of extracted links
+    return links;
 }
 
 // Function to scan a webpage for URLs
