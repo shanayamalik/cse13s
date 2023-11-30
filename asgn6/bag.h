@@ -19,4 +19,13 @@ typedef struct {
     bag_node_t *head;              // Pointer to the top node in the bag
 } bag_t;
 
+// Function to create a new bag
+bag_t *bag_new();
+// Function to insert a webpage into a bag
+void bag_insert(bag_t *bag, webpage_t *page);
+// Function to extract a webpage from a bag
+webpage_t *bag_extract(bag_t *bag);
+// Function to destroy a bag and free its resources
+void bag_delete(bag_t *bag);
+
 #endif //BAG_H

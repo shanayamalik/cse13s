@@ -1,25 +1,34 @@
 CC = gcc
-CFLAGS = -Wall -pedantic -std=c11 -ggdb
+CFLAGS = -Wall -pedantic -g
 LIBS = -lcurl
 
 # List your .c files here
-SRCS = crawler.c pagedir.c hashtable.c bag.c curl.c
+SRCS = crawler.c pagedir.c hashtable.c bag.c curl.c url.c
+
+# Convert the .c files to .o files
 OBJS = $(SRCS:.c=.o)
 
 # Name of your executable
 PROG = crawler
 
-.PHONY: all clean
-
+# Default target
 all: $(PROG)
 
+# Link the program
 $(PROG): $(OBJS)
-	$(CC) $(CFLAGS) $^ $(LIBS) -o $@
+	$(CC) $(CFLAGS) $(OBJS) $(LIBS) -o $(PROG)
 
-# Pattern to compile all .c files
+# Compile the source files
 %.o: %.c
-	$(CC) $(CFLAGS) -c $<
+	$(CC) $(CFLAGS) -c $< -o $@
+
+# Include dependencies for .h files
+-include $(SRCS:.c=.d)
+
+# Generate a dependency file for each source file
+%.d: %.c
+	$(CC) -M $(CFLAGS) $< > $@
 
 clean:
 	rm -f *~ *.o *.dSYM
-	rm -f $(PROG)
+	rm -f $(PROG) *.d

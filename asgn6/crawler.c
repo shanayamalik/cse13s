@@ -64,24 +64,14 @@ char *mem_strndup(const char *s, size_t n) {
 #define strdup(s)            mem_strdup(s)
 #define strndup(s, n)        mem_strndup(s, n)
 
-// Helper function to remove fragment from URL by modifying the original URL in place
-void remove_url_fragment(char *url) {
-    char *fragment_start = strchr(url, '#');  // Find the position of '#' in the URL
-    if (fragment_start) {                     // Check if '#' was found in the URL
-        *fragment_start = '\0';               // Replace '#' with null character to truncate the URL
-    }
-    // No return needed as the URL is modified in place
-}
-
 // Function to parse command-line arguments
-int parse_args(int argc, char *argv[], char **seedURL, char **pageDirectory, int *maxDepth) {
+void parse_args(int argc, char *argv[], char **seedURL, char **pageDirectory, int *maxDepth) {
     if (argc != 4) {   // Check if the number of arguments is exactly 4
         fprintf(stderr, "Usage: crawler seedURL pageDirectory maxDepth\n");
         exit(2);       // Exit if the argument count is incorrect
     }
 
     *seedURL = strdup(argv[1]);  // Duplicate the seed URL argument
-    remove_url_fragment(*seedURL);  // Process the seed URL to remove #fragment in place
     // Check if seed URL starts with 'http://' or 'https://'
     if (!(strncmp(*seedURL, "http://", 7) == 0 || strncmp(*seedURL, "https://", 8) == 0)) {
         fprintf(stderr, "Invalid URL. The URL must start with either http:// or https://\n");
@@ -101,16 +91,15 @@ int parse_args(int argc, char *argv[], char **seedURL, char **pageDirectory, int
     pagedir_init(*pageDirectory);
 }
 
-// Function to extract links from HTML content
 static char **extract_links(const char *html) {
     const char *a_tag_pattern = "<a ";  // Define the pattern to search for the anchor tag
     const char *href_pattern = "href=\""; // Define the pattern for the href attribute
     size_t links_capacity = 10;  // Initial capacity for the array of links
     size_t link_count = 0;       // Counter for the number of links found
-    char **links = malloc(links_capacity * sizeof(char *));  // Allocate initial array
+    char **links = malloc((links_capacity + 1) * sizeof(char *));  // Allocate initial array, +1 for NULL
 
     const char *ptr = html;  // Pointer to scan through the HTML content
-    while ((ptr = strstr(ptr, a_tag_pattern)) != NULL) {  // Find the anchor tag pattern
+    while ((ptr = strstr(ptr, a_tag_pattern)) != NULL) {
         const char *tag_end = strchr(ptr, '>');  // Find the end of the anchor tag
         if (tag_end == NULL) {
             break;  // Break if malformed HTML (missing tag end)
@@ -130,7 +119,7 @@ static char **extract_links(const char *html) {
 
             if (link_count >= links_capacity) {  // Resize array if necessary
                 links_capacity *= 2;
-                links = realloc(links, links_capacity * sizeof(char *));
+                links = realloc(links, (links_capacity + 1) * sizeof(char *)); // +1 for NULL
             }
             links[link_count++] = url;  // Store the URL
 
@@ -140,21 +129,18 @@ static char **extract_links(const char *html) {
         }
     }
 
-    if (link_count < links_capacity) {  // Trim excess capacity
-        links = realloc(links, link_count * sizeof(char *));
-    }
+    links[link_count] = NULL; // Explicitly set the last element to NULL
 
     return links;
 }
 
 // Function to scan a webpage for URLs
-void scan_page(webpage_t *page, char *pageDirectory, hashtable_t *hashtable) {
+void scan_page(webpage_t *page, char *pageDirectory, bag_t *bag, hashtable_t *hashtable) {
     char **links = extract_links(page->html);  // Extract links from the page's HTML
     char *base_url = page->url;                // Store the base URL of the current page
 
     // Iterate through the extracted links
     for (size_t i = 0; links[i] != NULL; i++) {
-        remove_url_fragment(links[i]);        // Delete any #fragment at end
         char *normalized_url = normalizeURL(base_url, links[i]); // Normalize each URL
         if (normalized_url == NULL) {         // Check if URL normalization failed
             continue;                         // Skip non-normalizable URLs
@@ -167,8 +153,8 @@ void scan_page(webpage_t *page, char *pageDirectory, hashtable_t *hashtable) {
                 new_page->url = normalized_url;  // Set the URL of the new page
                 new_page->depth = page->depth + 1; // Set the depth of the new page
                 new_page->html = NULL;           // Initialize the HTML content to NULL
-                bag_insert(pageDirectory, new_page); // Insert the new page into the bag
-                printf("Added URL to bag: %s", new_page->url); // Log the added URL
+                bag_insert(bag, new_page); // Insert the new page into the bag
+                printf("Added URL to bag: %s\n", new_page->url); // Log the added URL
             } else {
                 free(normalized_url);            // Free the URL if already seen
             }
@@ -182,7 +168,7 @@ void scan_page(webpage_t *page, char *pageDirectory, hashtable_t *hashtable) {
 // Function to crawl webpages
 void crawl(char *seedURL, char *pageDirectory, int maxDepth) {
     hashtable_t *hashtable = hashtable_create(200); // Create a hashtable with 200 slots
-    bag_t *bag = bag_create();             // Create a bag to store pages to crawl
+    bag_t *bag = bag_new();             // Create a bag to store pages to crawl
 
     webpage_t *seedPage = malloc(sizeof(webpage_t)); // Allocate memory for the seed page
     seedPage->url = strdup(seedURL);                // Duplicate the seed URL
@@ -194,7 +180,7 @@ void crawl(char *seedURL, char *pageDirectory, int maxDepth) {
     int docID = 1;                                  // Initialize document ID counter
     while ((seedPage = bag_extract(bag)) != NULL) { // Extract pages from the bag
 
-        // sleep(1);  // Sleep for polite crawling (uncomment in production)
+        sleep(1);  // Sleep for polite crawling (uncomment in production)
 
         char *html = download(seedPage->url, &seedPage->length); // Download the page
         printf("Downloaded page: %s\n", seedPage->url); // Log the fetched page
@@ -206,7 +192,7 @@ void crawl(char *seedURL, char *pageDirectory, int maxDepth) {
             printf("Saved page %d: %s\n", docID++, seedPage->url); // Log the saved page
 
             if (seedPage->depth < maxDepth) {       // Check if the depth limit is not reached
-                scan_page(seedPage, pageDirectory, hashtable); // Scan page for more links
+                scan_page(seedPage, pageDirectory, bag, hashtable); // Scan page for more links
                 printf("Scanned page: %s\n", seedPage->url); // Log the scanned page
             }
             free(html);                             // Free the downloaded HTML content
@@ -217,7 +203,7 @@ void crawl(char *seedURL, char *pageDirectory, int maxDepth) {
         free(seedPage);                             // Free the seed page
     }
 
-    bag_destroy(bag);                              // Destroy the bag and free resources
+    bag_delete(bag);                              // Destroy the bag and free resources
     hashtable_destroy(hashtable);                   // Destroy the hashtable and free resources
 }
 
