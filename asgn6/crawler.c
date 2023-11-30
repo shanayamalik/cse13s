@@ -102,45 +102,47 @@ int parse_args(int argc, char *argv[], char **seedURL, char **pageDirectory, int
 }
 
 // Function to extract links from HTML content
-// Function to extract links from HTML content
 static char **extract_links(const char *html) {
-    const char *link_pattern = "<a href=";  // Define the pattern to search for
-    size_t link_pattern_len = strlen(link_pattern);  // Length of the link pattern
+    const char *a_tag_pattern = "<a ";  // Define the pattern to search for the anchor tag
+    const char *href_pattern = "href=\""; // Define the pattern for the href attribute
     size_t links_capacity = 10;  // Initial capacity for the array of links
     size_t link_count = 0;       // Counter for the number of links found
     char **links = malloc(links_capacity * sizeof(char *));  // Allocate initial array
 
     const char *ptr = html;  // Pointer to scan through the HTML content
-    while ((ptr = strstr(ptr, link_pattern)) != NULL) {  // Find the link pattern
-        ptr += link_pattern_len;  // Move pointer past the link pattern
-
-        char quote_char = *ptr;  // Check if the quote is single or double
-        if (quote_char != '\'' && quote_char != '\"') {
-            continue;  // Skip if it's not a valid quote
+    while ((ptr = strstr(ptr, a_tag_pattern)) != NULL) {  // Find the anchor tag pattern
+        const char *tag_end = strchr(ptr, '>');  // Find the end of the anchor tag
+        if (tag_end == NULL) {
+            break;  // Break if malformed HTML (missing tag end)
         }
 
-        ptr++;  // Move past the quote
-        const char *end_quote = strchr(ptr, quote_char);  // Find the matching end quote
-        if (end_quote == NULL) {
-            break;  // Break if malformed HTML (missing end quote)
+        const char *href_ptr = strstr(ptr, href_pattern);  // Find the href pattern
+        if (href_ptr != NULL && href_ptr < tag_end) {  // Check if href is within the tag
+            href_ptr += strlen(href_pattern);  // Move past the href pattern
+            const char *end_quote = strchr(href_ptr, '\"');  // Find the end of the URL
+            if (end_quote == NULL || end_quote > tag_end) {
+                ptr = tag_end;
+                continue;  // Continue if malformed href or href outside the tag
+            }
+
+            size_t url_len = end_quote - href_ptr;  // Calculate the length of the URL
+            char *url = strndup(href_ptr, url_len);  // Duplicate the URL
+
+            if (link_count >= links_capacity) {  // Resize array if necessary
+                links_capacity *= 2;
+                links = realloc(links, links_capacity * sizeof(char *));
+            }
+            links[link_count++] = url;  // Store the URL
+
+            ptr = end_quote;  // Move pointer past the current URL
+        } else {
+            ptr = tag_end;  // Move pointer past the current tag
         }
-
-        size_t url_len = end_quote - ptr;  // Calculate the length of the URL
-        char *url = strndup(ptr, url_len);  // Duplicate the URL
-
-        // Check if the links array needs to be resized
-        if (link_count == links_capacity) {
-            links_capacity *= 2;  // Double the capacity
-            links = mem_realloc(links, links_capacity * sizeof(char *));  // Reallocate with new size
-        }
-
-        links[link_count++] = url;  // Add the new URL to the array
-        ptr = end_quote + 1;  // Move past the end quote for the next search
     }
 
-    // Resize the array to the actual number of links found (plus one for the NULL terminator)
-    links = mem_realloc(links, (link_count + 1) * sizeof(char *));
-    links[link_count] = NULL;  // Null-terminate the array
+    if (link_count < links_capacity) {  // Trim excess capacity
+        links = realloc(links, link_count * sizeof(char *));
+    }
 
     return links;
 }
