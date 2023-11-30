@@ -7,7 +7,8 @@
 #include "curl.h"                   // Include the curl library header
 #include "pagedir.h"                // Include the page directory header
 #include "url.h"                    // Include the URL processing header
-#include "bag_hashtable.h"          // Include the bag and hashtable header
+#include "bag.h"
+#include "hashtable.h"
 
 // Custom memory allocation functions with error checking
 
