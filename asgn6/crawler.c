@@ -64,6 +64,15 @@ char *mem_strndup(const char *s, size_t n) {
 #define strdup(s)            mem_strdup(s)
 #define strndup(s, n)        mem_strndup(s, n)
 
+// Helper function to remove fragment from URL by modifying the original URL in place
+void remove_url_fragment(char *url) {
+    char *fragment_pos = strchr(url, '#');  // Find the position of '#' in the URL
+    if (fragment_pos) {                     // Check if '#' was found in the URL
+        *fragment_pos = '\0';               // Replace '#' with null character to truncate the URL
+    }
+    // No return needed as the URL is modified in place
+}
+
 // Function to parse command-line arguments
 void parse_args(int argc, char *argv[], char **seedURL, char **pageDirectory, int *maxDepth) {
     if (argc != 4) {   // Check if the number of arguments is exactly 4
@@ -72,6 +81,7 @@ void parse_args(int argc, char *argv[], char **seedURL, char **pageDirectory, in
     }
 
     *seedURL = strdup(argv[1]);  // Duplicate the seed URL argument
+    remove_url_fragment(*seedURL);  // Process the seed URL to remove #fragment in place
     // Check if seed URL starts with 'http://' or 'https://'
     if (!(strncmp(*seedURL, "http://", 7) == 0 || strncmp(*seedURL, "https://", 8) == 0)) {
         fprintf(stderr, "Invalid URL. The URL must start with either http:// or https://\n");
@@ -116,6 +126,7 @@ static char **extract_links(const char *html) {
 
             size_t url_len = end_quote - href_ptr;  // Calculate the length of the URL
             char *url = strndup(href_ptr, url_len);  // Duplicate the URL
+            remove_url_fragment(url);  // Process the URL to remove #fragment in place
 
             if (link_count >= links_capacity) {  // Resize array if necessary
                 links_capacity *= 2;

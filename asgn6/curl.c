@@ -9,7 +9,7 @@ static size_t curl_buffer_capacity = 128;
 static int download_init_called = 0;
 
 static size_t write_cb(char *in, size_t size, size_t mem_count, void *userdata) {
-	const size_t byte_count = size * mem_count;
+        const size_t byte_count = size * mem_count;
 
 	if (curl_buffer == NULL) {
 		curl_buffer = calloc(curl_buffer_capacity, sizeof(char));
@@ -59,6 +59,7 @@ char * download(const char *url, size_t *size_out) {
 	curl_buffer_size = 0;
 
 	curl_easy_setopt(curl, CURLOPT_URL, url);
+        curl_easy_setopt(curl, CURLOPT_FOLLOWLOCATION, 1l);
 	curl_easy_setopt(curl, CURLOPT_ERRORBUFFER, error_buffer);
 	curl_easy_setopt(curl, CURLOPT_NOPROGRESS, 1l);
 	curl_easy_setopt(curl, CURLOPT_VERBOSE, 0l);
