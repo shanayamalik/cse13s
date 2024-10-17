@@ -1,4 +1,4 @@
-/* Include the header file for the stander input-output */
+/* Header file for the stander input-output */
 #include <stdio.h>
 
 /* Define the macro NUM_BINS with a value of sixteen */
